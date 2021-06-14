@@ -67,28 +67,34 @@ public class VSNetwork {
                     effect.serverWide);
             }
         }
+        
+        List<EntityPlayer> playerEntityList = null;
+        if (worldIn instanceof WorldServer)
+        	playerEntityList = ((WorldServer) worldIn).playerEntities;
+        else if (worldIn instanceof World)
+        	playerEntityList = ((World) worldIn).playerEntities;
 
-        List<EntityPlayer> playerEntityList = ((WorldServer) worldIn).playerEntities;
-
-        // Original method here.
-        for (int i = 0; i < playerEntityList.size(); ++i) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP) playerEntityList.get(i);
-
-            if (entityplayermp != except && entityplayermp.dimension == dimension) {
-                double d0 = x - entityplayermp.posX;
-                double d1 = y - entityplayermp.posY;
-                double d2 = z - entityplayermp.posZ;
-
-                double d3 = packetPosition.x - entityplayermp.posX;
-                double d4 = packetPosition.y - entityplayermp.posY;
-                double d5 = packetPosition.z - entityplayermp.posZ;
-
-                // Cover both cases; if player is in ship space or if player is in world space.
-                if ((d0 * d0 + d1 * d1 + d2 * d2 < radius * radius) || (d3 * d3 + d4 * d4 + d5 * d5
-                    < radius * radius)) {
-                    entityplayermp.connection.sendPacket(packetIn);
-                }
-            }
+        if (playerEntityList != null) {
+	        // Original method here.
+	        for (int i = 0; i < playerEntityList.size(); ++i) {
+	            EntityPlayerMP entityplayermp = (EntityPlayerMP) playerEntityList.get(i);
+	
+	            if (entityplayermp != except && entityplayermp.dimension == dimension) {
+	                double d0 = x - entityplayermp.posX;
+	                double d1 = y - entityplayermp.posY;
+	                double d2 = z - entityplayermp.posZ;
+	
+	                double d3 = packetPosition.x - entityplayermp.posX;
+	                double d4 = packetPosition.y - entityplayermp.posY;
+	                double d5 = packetPosition.z - entityplayermp.posZ;
+	
+	                // Cover both cases; if player is in ship space or if player is in world space.
+	                if ((d0 * d0 + d1 * d1 + d2 * d2 < radius * radius) || (d3 * d3 + d4 * d4 + d5 * d5
+	                    < radius * radius)) {
+	                    entityplayermp.connection.sendPacket(packetIn);
+	                }
+	            }
+	        }
         }
     }
 }
